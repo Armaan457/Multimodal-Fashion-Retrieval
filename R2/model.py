@@ -27,7 +27,7 @@ class FashionEmbedder:
         self.cross_model.to(self.device)
         self.cross_model.eval()
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def encode_text(self, text: str) -> np.ndarray:
         tokens = self.tokenizer([text]).to(self.device)
         embedding = self.model.encode_text(tokens, normalize=True)
