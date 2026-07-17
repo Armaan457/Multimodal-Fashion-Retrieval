@@ -8,7 +8,7 @@ class FashionSearchEngine:
         self.index = index
         self.model = model_handler
         self.heads = {}
-        self.top_k_config = {"category": 3, "attribute": 10, "style": 3}
+        self.top_k_config = {"category": 5, "attribute": 20, "style": 5}
 
     def set_semantic_heads(self, categories: list, attributes: list, styles: list):
         self.heads["category"] = {"labels": categories, "embeddings": self.model.encode_texts(categories)}
@@ -51,10 +51,10 @@ class FashionSearchEngine:
             rankings[head_name] = np.argsort(scores)[::-1]
 
         weights = {
-            "image": 0.25,
-            "category": 0.25,
-            "attribute": 0.25,
-            "style": 0.25,
+            "image": 0.85,
+            "category": 0.05,
+            "attribute": 0.05,
+            "style": 0.05,
         }
 
         rrf_scores = defaultdict(float)

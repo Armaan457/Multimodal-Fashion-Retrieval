@@ -9,6 +9,8 @@ from tqdm.auto import tqdm
 os.environ["HF_HOME"] = str(Path(__file__).parent.parent / "models")
 
 class FashionCLIPModel:
+    MAX_TEXT_LENGTH = 77
+
     def __init__(self, model_name: str = "patrickjohncyh/fashion-clip"):
         self.device = self._get_device()
         self.processor = AutoProcessor.from_pretrained(model_name)
@@ -38,7 +40,11 @@ class FashionCLIPModel:
         for i in range(0, len(texts), batch_size):
             batch = texts[i : i + batch_size]
             inputs = self.processor(
-                text=batch, padding=True, truncation=True, return_tensors="pt"
+                text=batch,
+                padding=True,
+                truncation=True,
+                max_length=self.MAX_TEXT_LENGTH,
+                return_tensors="pt",
             )
             inputs = {k: v.to(self.device) for k, v in inputs.items()}
             outputs = self.model.get_text_features(**inputs)

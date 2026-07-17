@@ -1,4 +1,5 @@
 from pathlib import Path
+import pickle
 import hnswlib
 import numpy as np
 import torch
@@ -41,24 +42,42 @@ class VectorIndex:
         
         return image_embeddings
 
-    def save(self, filepath: str | Path):
+    def save(self, filepath: str | Path, image_embeddings: np.ndarray):
         bin_path = Path(filepath)
         bin_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         self.index.save_index(str(bin_path))
-        
-        meta_path = bin_path.with_suffix('.npy')
-        np.save(meta_path, np.array(self.all_paths))
+
+        meta_path = bin_path.with_suffix(".pkl")
+        metadata = {
+            "all_paths": self.all_paths,
+            "image_embeddings": image_embeddings,
+            "dim": self.dim,
+            "space": self.space,
+        }
+
+        with open(meta_path, "wb") as f:
+            pickle.dump(metadata, f)
+
 
     def load(self, filepath: str | Path):
         bin_path = Path(filepath)
-        meta_path = bin_path.with_suffix('.npy')
-        
+        meta_path = bin_path.with_suffix(".pkl")
+
         if bin_path.exists() and meta_path.exists():
+            with open(meta_path, "rb") as f:
+                metadata = pickle.load(f)
+
+            self.dim = metadata["dim"]
+            self.space = metadata["space"]
+            self.all_paths = metadata["all_paths"]
+            image_embeddings = metadata["image_embeddings"]
+
             self.index = hnswlib.Index(space=self.space, dim=self.dim)
             self.index.load_index(str(bin_path))
-            
-            self.all_paths = list(np.load(meta_path))
+
             print(f"Loaded existing index and {len(self.all_paths)} paths.")
-        else:
-            print("No local index found. Making one")
+            return image_embeddings
+
+        print("No local index found. Making one")
+        return None
