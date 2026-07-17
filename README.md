@@ -2,6 +2,10 @@
 
 A multimodal fashion retrieval system implementing two complementary retrieval pipelines designed for high-quality image search from natural language descriptions.
 
+**Project Report:** [Report](https://docs.google.com/document/d/1k5635CgrfiRUiMr3FztmOzXu-P4K0-D2BxSNKV4BA0g/edit?usp=sharing)
+
+---
+
 ## Overview
 
 This project explores two different approaches to fashion retrieval:
@@ -92,7 +96,7 @@ Vector Retrieval (HNSW)
 
 ### R2 Pipeline
 
-* **Backbone:** Fashion SigLIP
+* **Backbone:** FashionSigLIP
 * **Re-ranker:** BLIP Cross-Modal Model
 
 ---
@@ -111,7 +115,7 @@ Vector Retrieval (HNSW)
 * Python
 * PyTorch
 * FashionCLIP
-* Fashion SigLIP
+* FashionSigLIP
 * BLIP
 * HNSW
 * NumPy
